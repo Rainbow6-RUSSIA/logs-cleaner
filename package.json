@@ -1,0 +1,14 @@
+{
+  "name": "logs-cleaner",
+  "version": "1.0.0",
+  "description": "Retroactive logs cleaner",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "https://github.com/discordjs/discord.js#60f89bd",
+    "dotenv": "^8.1.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
