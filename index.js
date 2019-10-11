@@ -10,16 +10,19 @@ client.on('ready', async () => {
     console.log('Start!');
     const logs = client.channels.get('414757184480608277');
 
-    const arr = ['deleted in <#573721436410085383>',
-    'deleted in <#580774892618645524>',
-    'deleted in <#622175459660005386>',
-    'deleted in <#594965157696897231>',
-    'deleted in <#595979224523997184>',
-    'deleted in <#414757184480608277>'];
+    const arr = [
+        '573721436410085383',
+        '580774892618645524',
+        '622175459660005386',
+        '594965157696897231',
+        '595979224523997184',
+        '414757184480608277']
+    .map(id => [`deleted in <#${id}>`, `Bulk Delete in <#${id}>`])
+    .flat();
 
     await logs.messages.fetch({ limit: 100, before: process.env.BEFORE });
     let messages = new Collection(logs.messages.filter(m => arr.some(match => m.embeds[0] && m.embeds[0].description && m.embeds[0].description.includes(match))).array().map(m => [m.id, m]));
-    let before = logs.messages.sort((a, b) => a.createdTimestamp - b.createdTimestamp).first().id;
+    let before = logs.messages.last().id;
     logs.bulkDelete([...messages.values()], true);
     for (let i = 0; i < process.env.ITERATIONS; i++) {
         const bulk = await logs.messages.fetch({ limit: 100, before });
@@ -31,7 +34,7 @@ client.on('ready', async () => {
                     && m.embeds[0].description.includes(match)
                 )
             );
-        before = bulk.first().id;
+        before = bulk.last().id;
         await Promise.all(
           add.map(async m => {
             await m.delete();
