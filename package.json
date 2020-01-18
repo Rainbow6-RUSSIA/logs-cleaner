@@ -6,12 +6,19 @@
   "license": "MIT",
   "dependencies": {
     "discord.js": "https://github.com/discordjs/discord.js#60f89bd",
-    "dotenv": "^8.1.0"
+    "dotenv": "^8.2.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "build": "tsc -p .",
+    "start": "node --inspect ./build/index.js",
+    "dev": "tsc-watch --onSuccess \"yarn start\""
   },
   "engines": {
-    "node": "12.11.x"
+    "node": "12.14.x"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.17",
+    "typescript": "^3.7.3",
+    "tsc-watch": "^4.0.0"
   }
 }
