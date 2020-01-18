@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsc -p .",
     "start": "node --inspect ./build/index.js",
-    "dev": "tsc-watch --onSuccess \"yarn start\""
+    "dev": "tsc-watch --onSuccess \"yarn start\"",
+    "postinstall": "yarn build"
   },
   "engines": {
     "node": "12.14.x"
