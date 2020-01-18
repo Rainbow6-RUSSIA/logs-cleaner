@@ -16,15 +16,15 @@ client.on('ready', async () => {
     let before = process.env.BEFORE;
     const after = process.env.AFTER;
     const time = (snowflake: Snowflake) => SnowflakeUtil.deconstruct(snowflake).timestamp;
-    let i = 0;
+    let i = 1;
     let j = 0;
     do {
         const messages = await logs.messages.fetch({ limit: 100, before });
-        j += messages.size;
         const filtered = messages.filter(m => {
             const embed = m.embeds?.[0];
             return time(m.id) > time(after) && embed?.fields?.[0]?.value?.includes('R6API refreshed to');
         });
+        j += filtered.size;
         filtered.map(m => m.delete().then(() => console.log(`${i++}/${j}`, m.id, time(m.id), m.url)));
         before = messages.sort((a, b) => a.createdTimestamp - b.createdTimestamp).first().id;
     } while (time(before) > time(after));
