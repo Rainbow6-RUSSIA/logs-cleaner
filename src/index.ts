@@ -30,5 +30,4 @@ client.on('ready', async () => {
     } while (time(before) > time(after));
 
     console.log('Done!');
-    process.exit(0);
 });
