@@ -25,7 +25,7 @@ client.on('ready', async () => {
             return time(m.id) > time(after) && embed?.fields?.[0]?.value?.includes('R6API refreshed to');
         });
         j += filtered.size;
-        filtered.map(m => m.delete().then(() => console.log(`${i++}/${j}`, m.id, time(m.id), m.url)));
+        filtered.map(m => m.delete().then(() => console.log(`${i}/${j}/${(100 * i++ / j).toPrecision(2)}%`, m.id, new Date(time(m.id)), m.url)));
         before = messages.sort((a, b) => a.createdTimestamp - b.createdTimestamp).first().id;
     } while (time(before) > time(after));
 
