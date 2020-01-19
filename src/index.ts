@@ -7,7 +7,7 @@ const client = new Client(/* { messageCacheMaxSize: -1, messageCacheLifetime: 30
 
 client.login(process.env.DISCORD_TOKEN);
 
-client.on('debug', console.log);
+client.on('debug', info => info.toLowerCase().includes('heartbeat') || console.log(info));
 
 client.on('ready', async () => {
     console.log('Start!', client.user.tag);
@@ -25,7 +25,7 @@ client.on('ready', async () => {
             return time(m.id) > time(after) && embed?.fields?.[0]?.value?.includes('R6API refreshed to');
         });
         j += filtered.size;
-        filtered.map(m => m.delete().then(() => console.log(`${i}/${j}/${(100 * i++ / j).toPrecision(2)}%`, m.id, new Date(time(m.id)), m.url)));
+        filtered.map(m => m.delete().then(() => console.log(`${i}/${j}/${(100 * i++ / j).toPrecision(2)}%`, m.id, new Date(time(m.id)), m.url)).catch(console.log));
         before = messages.sort((a, b) => a.createdTimestamp - b.createdTimestamp).first().id;
     } while (time(before) > time(after));
 
