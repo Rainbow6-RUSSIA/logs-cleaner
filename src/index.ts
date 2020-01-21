@@ -11,8 +11,7 @@ client.on('debug', info => info.toLowerCase().includes('heartbeat') || console.l
 
 client.on('ready', async () => {
     console.log('Start!', client.user.tag);
-    const r6ru = client.guilds.get('414757184044531722');
-    const logs = client.channels.get('602915656857419786') as TextChannel;
+    const logs = client.channels.get(process.env.CHANNEL) as TextChannel;
     let before = process.env.BEFORE;
     const after = process.env.AFTER;
     const time = (snowflake: Snowflake) => SnowflakeUtil.deconstruct(snowflake).timestamp;
@@ -22,7 +21,7 @@ client.on('ready', async () => {
         const messages = await logs.messages.fetch({ limit: 100, before });
         const filtered = messages.filter(m => {
             const embed = m.embeds?.[0];
-            return time(m.id) > time(after) && embed?.fields?.[0]?.value?.includes('R6API refreshed to');
+            return time(m.id) > time(after) && embed?.fields?.[0]?.value?.includes(process.env.TRIGGER);
         });
         j += filtered.size;
         filtered.map(m => m.delete().then(() => console.log(`${i}/${j}/${(100 * i++ / j).toPrecision(2)}%`, m.id, new Date(time(m.id)), m.url)).catch(console.log));
