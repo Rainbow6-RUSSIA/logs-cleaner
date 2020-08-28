@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "start": "node --inspect ./build/index.js",
+    "start": "node ./build/index.js",
+    "start:dev": "node --inspect ./build/index.js",
     "dev": "tsc-watch --onSuccess \"yarn start\""
   },
   "engines": {
