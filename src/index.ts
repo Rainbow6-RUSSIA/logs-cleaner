@@ -21,7 +21,7 @@ client.on('ready', async () => {
         const messages = await logs.messages.fetch({ limit: 100, before });
         const filtered = messages.filter(m => {
             // const embed = m.embeds?.[0];
-            return time(m.id) > time(after) && new RegExp(process.env.REGEXP).test(m.content); // embed?.fields?.[0]?.value?.includes(process.env.TRIGGER);
+            return time(m.id) > time(after) && new RegExp(process.env.REGEXP).test(m.content.toLowerCase()); // embed?.fields?.[0]?.value?.includes(process.env.TRIGGER);
         });
         j += filtered.size;
         filtered.map(m => m.delete().then(() => console.log(`${i}/${j}/${(100 * i++ / j).toPrecision(3)}%`, m.id, new Date(time(m.id)), m.url)).catch(console.log));
