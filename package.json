@@ -14,11 +14,12 @@
     "dev": "tsc-watch --onSuccess \"yarn start\""
   },
   "engines": {
-    "node": "12.14.x"
+    "node": "14"
   },
   "devDependencies": {
     "@types/node": "^12.12.17",
-    "typescript": "^3.7.3",
-    "tsc-watch": "^4.0.0"
+    "ts-node": "^9.0.0",
+    "tsc-watch": "^4.0.0",
+    "typescript": "^4.0.2"
   }
 }
