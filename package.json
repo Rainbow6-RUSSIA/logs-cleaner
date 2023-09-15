@@ -5,8 +5,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "https://github.com/discordjs/discord.js#60f89bd",
-    "dotenv": "^8.2.0"
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1"
   },
   "scripts": {
     "build": "tsc -p .",
@@ -15,12 +15,13 @@
     "dev": "tsc-watch --onSuccess \"yarn start\""
   },
   "engines": {
-    "node": "14"
+    "node": "20"
   },
   "devDependencies": {
-    "@types/node": "^12.12.17",
-    "ts-node": "^9.0.0",
-    "tsc-watch": "^4.0.0",
-    "typescript": "^4.0.2"
-  }
+    "@types/node": "^20.6.1",
+    "ts-node": "^10.9.1",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.2.2"
+  },
+  "packageManager": "yarn@3.6.3"
 }
