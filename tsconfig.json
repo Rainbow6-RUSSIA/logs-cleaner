@@ -3,14 +3,13 @@
     "rootDir": "src",
     "outDir": "build",
     "composite": true,
-    "module": "commonjs",
-    "target": "es2018",
+    "module": "NodeNext",
+    "target": "es2020",
     "noImplicitAny": false,
     "experimentalDecorators": true,
     "sourceMap": true,
     "allowJs": false,
     "declaration": true,
-    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "removeComments": true
   }

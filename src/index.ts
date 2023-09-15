@@ -1,32 +1,36 @@
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 dotenv.config();
 
-import { Client, Message, Snowflake, SnowflakeUtil, TextChannel } from 'discord.js';
+import { Client, TextChannel, WebhookClient } from "discord.js";
+import { iterateChannelMessages } from "./iterator";
 
-const client = new Client(/* { messageCacheMaxSize: -1, messageCacheLifetime: 30, messageSweepInterval: 1 } */);
+const client = new Client({
+  intents: ["Guilds", "GuildMessageReactions", "GuildMessages"],
+});
+
+const webhook = new WebhookClient({ url: process.env.WEBHOOK });
 
 client.login(process.env.DISCORD_TOKEN);
 
-client.on('debug', info => info.toLowerCase().includes('heartbeat') || console.log(info));
+client.on(
+  "debug",
+  (info) => void info.toLowerCase().includes("heartbeat") || console.log(info)
+);
 
-client.on('ready', async () => {
-    console.log('Start!', client.user.tag);
-    const logs = client.channels.get(process.env.CHANNEL) as TextChannel;
-    let before = process.env.BEFORE;
-    const after = process.env.AFTER;
-    const time = (snowflake: Snowflake) => SnowflakeUtil.deconstruct(snowflake).timestamp;
-    let i = 1;
-    let j = 0;
-    do {
-        const messages = await logs.messages.fetch({ limit: 100, before });
-        const filtered = messages.filter(m => {
-            // const embed = m.embeds?.[0];
-            return time(m.id) > time(after) && new RegExp(process.env.REGEXP).test(m.content.toLowerCase()); // embed?.fields?.[0]?.value?.includes(process.env.TRIGGER);
-        });
-        j += filtered.size;
-        filtered.map(m => m.delete().then(() => console.log(`${i}/${j}/${(100 * i++ / j).toPrecision(3)}%`, m.id, new Date(time(m.id)), m.url)).catch(console.log));
-        before = messages.sort((a, b) => a.createdTimestamp - b.createdTimestamp).first().id;
-    } while (time(before) > time(after));
-
-    console.log('Done!');
+client.on("ready", async () => {
+  console.log("Start!", client.user.tag);
+  const channel = client.channels.cache.get(process.env.CHANNEL) as TextChannel;
+  let i = 0;
+  for await (const message of iterateChannelMessages(channel)) {
+    if (i > 5) break;
+    const content = [
+      `${message.content}`,
+      `(репостнул ${message.author} в <t:${message.createdTimestamp}>)`,
+      message.reactions.cache.map((r) => `${r.emoji} - ${r.count}`).join(", "),
+      ...message.attachments.map((a) => a.url),
+    ].join("\n");
+    await webhook.send({ content, threadId: process.env.FORUM_POST });
+    i++;
+  }
+  console.log("Done!");
 });
