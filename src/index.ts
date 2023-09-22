@@ -1,14 +1,21 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import { Client, TextChannel, WebhookClient } from "discord.js";
+import { Client, TextChannel, WebhookClient, EmbedBuilder } from "discord.js";
 import { iterateChannelMessages } from "./iterator";
+import { setTimeout } from "timers/promises";
 
 const client = new Client({
   intents: ["Guilds", "GuildMessageReactions", "GuildMessages"],
 });
 
-const webhook = new WebhookClient({ url: process.env.WEBHOOK });
+const webhook1 = new WebhookClient({ url: process.env.WEBHOOK1 });
+const webhook2 = new WebhookClient({ url: process.env.WEBHOOK2 });
+let i = 0;
+function webhook() {
+  i++;
+  return webhook2;
+}
 
 client.login(process.env.DISCORD_TOKEN);
 
@@ -20,17 +27,37 @@ client.on(
 client.on("ready", async () => {
   console.log("Start!", client.user.tag);
   const channel = client.channels.cache.get(process.env.CHANNEL) as TextChannel;
-  let i = 0;
-  for await (const message of iterateChannelMessages(channel)) {
-    if (i > 5) break;
-    const content = [
-      `${message.content}`,
-      `(репостнул ${message.author} в <t:${message.createdTimestamp}>)`,
-      message.reactions.cache.map((r) => `${r.emoji} - ${r.count}`).join(", "),
-      ...message.attachments.map((a) => a.url),
-    ].join("\n");
-    await webhook.send({ content, threadId: process.env.FORUM_POST });
-    i++;
+  for await (const {
+    reactions,
+    author,
+    attachments,
+    content,
+    createdAt,
+  } of iterateChannelMessages(channel)) {
+    await webhook().send({
+      embeds: [
+        new EmbedBuilder()
+          .setAuthor({
+            name: author.globalName,
+            iconURL: author.avatarURL(),
+            url: "https://discord.com/users/" + author.id,
+          })
+          .setDescription(content.replaceAll("|", "") || null)
+          .setTimestamp(createdAt)
+          .addFields({
+            name: "Реакции",
+            value:
+              reactions.cache
+                .map((r) => `${r.emoji} \`${r.count}\``)
+                .join(", ") || "н/д",
+          })
+          .toJSON(),
+      ],
+      threadId: process.env.FORUM_POST,
+      allowedMentions: {},
+      files: [...attachments.values()],
+    });
+    await setTimeout(1000);
   }
   console.log("Done!");
 });

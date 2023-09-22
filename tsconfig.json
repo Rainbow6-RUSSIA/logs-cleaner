@@ -5,6 +5,7 @@
     "composite": true,
     "module": "NodeNext",
     "target": "es2020",
+    "lib": ["ESNext"],
     "noImplicitAny": false,
     "experimentalDecorators": true,
     "sourceMap": true,
